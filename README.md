@@ -2,12 +2,12 @@
 
 [![GitHub Actions build badge](https://github.com/actions/typescript-action/workflows/build-test/badge.svg)](https://github.com/brcrista/issues-reporter/actions?query=workflow%3Abuild-test)
 
-GitHub Action to generate a Markdown summary of the issues in a repo.
+GitHub Action that generates a Markdown summary of the issues in a repo.
 
 ## Usage
 
 ```yml
-- uses: brcrista/issues-reporter@v1
+- uses: brcrista/issues-reporter@dev
   with:
     title: 'My Issues Report'
     path: 'IssuesReport.md'
