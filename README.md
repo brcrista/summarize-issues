@@ -47,6 +47,15 @@ This will commit a Markdown file named `IssuesReport.md` that looks like this:
 
 ## Details
 ### :green_heart: Repair items [Link to Query](Link)
+Total : 5
+Threshold : 10
+Labels : `incident-repair`, `short-term`
+| Owner | Count |
+| -- | -- |
+| [PersonA](Link) | 5 |
+| [PersonB](Link) | 5 |
+
+### :green_heart: Another section [Link to Query](Link)
 Total : 0
 Threshold : 2
 Labels : `bug`
