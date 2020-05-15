@@ -1,5 +1,5 @@
 {
-  "name": "issues-reporter",
+  "name": "summarize-issues",
   "version": "0.0.0",
   "private": true,
   "description": "GitHub Action to generate a Markdown summary of the issues in a repo",
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/brcrista/issues-reporter.git"
+    "url": "git+https://github.com/brcrista/summarize-issues.git"
   },
   "keywords": [
     "actions",
