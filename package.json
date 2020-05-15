@@ -1,8 +1,8 @@
 {
-  "name": "typescript-action",
+  "name": "issues-reporter",
   "version": "0.0.0",
   "private": true,
-  "description": "TypeScript template action",
+  "description": "Generate a Markdown summary of the issues in a repo",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
@@ -15,17 +15,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/typescript-action.git"
+    "url": "git+https://github.com/brcrista/issues-reporter.git"
   },
   "keywords": [
     "actions",
-    "node",
-    "setup"
+    "node"
   ],
-  "author": "YourNameOrOrganization",
+  "author": "Brian Cristante",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.2.0"
+    "@actions/core": "^1.2.4"
   },
   "devDependencies": {
     "@types/jest": "^24.0.23",
@@ -40,6 +39,6 @@
     "js-yaml": "^3.13.1",
     "prettier": "^1.19.1",
     "ts-jest": "^24.2.0",
-    "typescript": "^3.6.4"
+    "typescript": "^3.9.2"
   }
 }
