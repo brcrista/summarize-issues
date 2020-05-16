@@ -10,8 +10,8 @@ GitHub Action that generates a Markdown summary of the issues in a repo.
 - uses: brcrista/summarize-issues@dev
   with:
     title: 'My Issues Report'
-    path: 'IssuesReport.md'
-    sections: 'issues-report.json'
+    outputPath: 'IssuesReport.md'
+    configPath: 'issues-report.json'
 ```
 
 where `issues-report.json` looks like:
