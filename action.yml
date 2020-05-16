@@ -5,11 +5,11 @@ inputs:
   title:
     description: 'title of the report'
     required: true
-  path:
+  outputPath:
     description: 'relative path from the repo root to write the report file'
     required: true
-  config:
-    description: 'path to a JSON file describing the sections of the report'
+  configPath:
+    description: 'relative path from the repo root to a JSON file describing the sections of the report'
     required: true
 runs:
   using: 'node12'
