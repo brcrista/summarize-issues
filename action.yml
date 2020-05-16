@@ -1,10 +1,16 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'summarize-issues'
+description: 'GitHub Action that generates a Markdown summary of the issues in a repo.'
+author: 'Brian Cristante'
 inputs:
-  myInput:              # change this
-    description: 'input description here'
-    default: 'default value if applicable'
+  title:
+    description: 'title of the report'
+    required: true
+  path:
+    description: 'relative path from the repo root to write the report file'
+    required: true
+  config:
+    description: 'path to a JSON file describing the sections of the report'
+    required: true
 runs:
   using: 'node12'
   main: 'dist/index.js'
