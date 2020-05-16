@@ -1,4 +1,4 @@
-import type { Issue, Section } from './types';
+import type { Issue, RepoContext, Section } from './types';
 
 export function* generateSummary(title: string, sections: Section[]) {
     yield h3(title);
@@ -7,10 +7,10 @@ export function* generateSummary(title: string, sections: Section[]) {
     }
 }
 
-export function* generateDetails(sections: Section[]) {
+export function* generateDetails(sections: Section[], repoContext: RepoContext) {
     yield h2('Details');
     for (const section of sections) {
-        yield* sectionDetails(section);
+        yield* sectionDetails(section, repoContext);
     }
 }
 
@@ -22,10 +22,10 @@ function* sectionSummary(section: Section) {
     yield `| ${link(section.section, '#' + hyphenate(section.section))} | ${section.labels.map(code).join(', ')} | ${section.threshold} | ${section.issues.length} | ${section.status} |`;
 }
 
-function* sectionDetails(section: Section) {
+function* sectionDetails(section: Section, repoContext: RepoContext) {
     const owners = sumIssuesForOwners(section.issues);
 
-    yield h3(`${section.status} ${section.section} ${link('(query)', 'https://github.com')}`); // TODO
+    yield h3(`${section.status} ${section.section} ${link('(query)', issuesQuery(repoContext, section.labels))}`);
     yield `Total: ${section.issues.length}\n`;
     yield `Threshold: ${section.threshold}\n`;
     yield `Labels: ${section.labels.map(code).join(', ')}\n`
@@ -48,6 +48,18 @@ const code = (text: string) => `\`${text}\``;
 function hyphenate(headerName: string) {
     // Not entirely correct; should replace 1 or more spaces.
     return headerName.replace(' ', '-');
+}
+
+// Construct a URL like https://github.com/brcrista/summarize-issues-test/issues?q=is%3Aissue+is%3Aopen+label%3Aincident-repair+label%3Ashort-term+
+function issuesQuery(repoContext: RepoContext, labels: string[], assignee?: string) {
+    const queryInputs = ['is:issue','is:open'].concat(labels.map(label => `label:${label}`));
+    if (assignee) {
+        queryInputs.push(`assignee:${assignee}`);
+    }
+
+    const queryString = encodeURIComponent(`${queryInputs.join('+')}`);
+
+    return `https://github.com/${repoContext.owner}/${repoContext.repo}/issues?q=${queryString}`;
 }
 
 // Get a mapping of owner logins to their URL and the number of issues they have in this section.
