@@ -11,6 +11,9 @@ inputs:
   outputPath:
     description: 'relative path from the repo root to write the report file'
     required: true
+  token:
+    description: '${{ secrets.GITHUB_TOKEN }}'
+    required: true
 runs:
   using: 'node12'
   main: 'dist/index.js'

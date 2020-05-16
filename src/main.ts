@@ -1,13 +1,15 @@
-import * as core from '@actions/core'
+import * as core from '@actions/core';
+import * as github from '@actions/github';
 
 import * as summarizeIssues from './summarize-issues';
 
 async function main(): Promise<void> {
     try {
-        summarizeIssues.run({
+        await summarizeIssues.run({
             title: core.getInput('title'),
             configPath: core.getInput('configPath'),
-            outputPath: core.getInput('outputPath')
+            outputPath: core.getInput('outputPath'),
+            octokit: new github.GitHub(core.getInput('token'))
         });
     } catch (error) {
         core.setFailed(error.message);

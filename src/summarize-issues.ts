@@ -1,13 +1,9 @@
 import * as fs from 'fs';
 
+import { Octokit } from '@octokit/rest';
+
 import * as markdown from './markdown';
 import * as status from './status';
-
-export interface Inputs {
-    title: string,
-    configPath: string,
-    outputPath: string
-}
 
 // What comes out of the config file
 interface ConfigSection {
@@ -22,7 +18,18 @@ export type Section = ConfigSection & {
     status: status.Status
 }
 
-export function run(inputs: Inputs) {
+// See https://octokit.github.io/rest.js/v17#issues-list-for-repo.
+// Use this interface to inject a test double for automated tests.
+export interface QueryIssues {
+    (owner: string, repo: string, labels: string[]): Promise<Octokit.Response<Octokit.IssuesListForRepoResponse>> 
+}
+
+export async function run(inputs: {
+    title: string,
+    configPath: string,
+    outputPath: string,
+    octokit: Octokit
+}) {
     console.log(`Reading the config file at ${inputs.configPath} ...`);
     const config = fs.readFileSync(inputs.configPath, 'utf8');
     const configSections: ConfigSection[] = JSON.parse(config);
@@ -30,7 +37,8 @@ export function run(inputs: Inputs) {
     console.log('Querying for issues ...');
     const sections = [];
     for (const configSection of configSections) {
-        const issues = ['hello']; // TODO
+        const issuesResponse = await queryIssues('repo', 'owner', configSection.labels, inputs.octokit); // TODO
+        const issues = issuesResponse.data;
         sections.push({
             ...configSection,
             issues,
@@ -45,6 +53,15 @@ export function run(inputs: Inputs) {
     fs.writeFileSync(inputs.outputPath, report, 'utf8');
 
     console.log('Done!');
+}
+
+async function queryIssues(owner: string, repo: string, labels: string[], octokit: Octokit) {
+    return await octokit.issues.listForRepo({
+        owner,
+        repo,
+        labels: labels.join(','),
+        state: 'open'
+    });
 }
 
 function generateReport(title: string, sections: Section[]): string {
