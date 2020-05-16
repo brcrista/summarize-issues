@@ -26,9 +26,9 @@ function* sectionDetails(section: Section) {
     const owners = sumIssuesForOwners(section.issues);
 
     yield h3(`${section.status} ${section.section} ${link('(query)', 'https://github.com')}`); // TODO
-    yield `Total: ${section.issues.length}`;
-    yield `Threshold: ${section.threshold}`;
-    yield `Labels: ${section.labels.map(code).join(', ')}`
+    yield `Total: ${section.issues.length}\n`;
+    yield `Threshold: ${section.threshold}\n`;
+    yield `Labels: ${section.labels.map(code).join(', ')}\n`
     yield '| Owner | Count |';
     yield '| -- | -- |';
 
