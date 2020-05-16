@@ -23,7 +23,6 @@ export function run(inputs: Inputs) {
     const report = generateReport(inputs.title, sections);
 
     console.log(`Writing the Markdown to ${inputs.outputPath} ...`);
-    // Write the Markdown to the output file
     fs.writeFileSync(inputs.outputPath, report, 'utf8');
 
     console.log('Done!');
