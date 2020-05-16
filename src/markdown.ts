@@ -1,4 +1,4 @@
-import type { Section } from './summarize-issues';
+import type { Issue, Section } from './types';
 
 export function* generateSummary(title: string, sections: Section[]) {
     yield h3(title);
@@ -23,14 +23,19 @@ function* sectionSummary(section: Section) {
 }
 
 function* sectionDetails(section: Section) {
+    const owners = sumIssuesForOwners(section.issues);
+
     yield h3(`${section.status} ${section.section} ${link('(query)', 'https://github.com')}`); // TODO
     yield `Total: ${section.issues.length}`;
     yield `Threshold: ${section.threshold}`;
     yield `Labels: ${section.labels.map(code).join(', ')}`
     yield '| Owner | Count |';
     yield '| -- | -- |';
-    yield `| ${link('PersonA', 'https://github.com')} | {5} |`; // TODO
-    yield `| ${link('PersonB', 'https://github.com')} | {5} |`; // TODO
+
+    for (const key of Object.keys(owners)) {
+        // `key` is the owner's login
+        yield `| ${link(key, owners[key].url)} | ${owners[key]} |`;
+    }
 }
 
 // Markdown and HTML helpers -- not the least bit safe for production.
@@ -43,4 +48,21 @@ const code = (text: string) => `\`${text}\``;
 function hyphenate(headerName: string) {
     // Not entirely correct; should replace 1 or more spaces.
     return headerName.replace(' ', '-');
+}
+
+// Get a mapping of owner logins to their URL and the number of issues they have in this section.
+// Using `Map` here might be easier, but I'm not sure if it will get owner equality right.
+// That is, I don't know if it hashes the keys.
+function sumIssuesForOwners(issues: Issue[]) {
+    const result: { [owner: string]: { url: string, count: number } } = {};
+    for (const issue of issues) {
+        for (const owner of issue.assignees) {
+            if (!result[owner.login]) {
+                result[owner.login] = { url: owner.html_url, count: 0 };
+            }
+            result[owner.login].count += 1
+        }
+    }
+
+    return result;
 }

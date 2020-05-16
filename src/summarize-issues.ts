@@ -4,22 +4,7 @@ import type { Octokit } from '@octokit/rest';
 
 import * as markdown from './markdown';
 import * as status from './status';
-
-// The type of `context` from `@actions/github`
-interface RepoContext { owner: string, repo: string }
-
-// What comes out of the config file
-interface ConfigSection {
-    section: string,
-    labels: string[],
-    threshold: number
-}
-
-// What comes out of the config file plus whatever else we need to write the report
-export type Section = ConfigSection & {
-    issues: Octokit.IssuesListForRepoResponseItem[],
-    status: status.Status
-}
+import type { ConfigSection, RepoContext, Section } from './types';
 
 export async function run(inputs: {
     title: string,
