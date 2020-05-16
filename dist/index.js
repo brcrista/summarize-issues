@@ -3570,8 +3570,7 @@ async function run(inputs) {
     console.log('Querying for issues ...');
     const sections = [];
     for (const configSection of configSections) {
-        const issuesResponse = await queryIssues(inputs.octokit, inputs.repoContext, configSection.labels);
-        const issues = issuesResponse.data;
+        const issues = await queryIssues(inputs.octokit, inputs.repoContext, configSection.labels);
         sections.push(Object.assign(Object.assign({}, configSection), { issues, status: status.getStatus(issues.length, configSection.threshold) }));
     }
     ;
@@ -3584,7 +3583,8 @@ async function run(inputs) {
 exports.run = run;
 // See https://octokit.github.io/rest.js/v17#issues-list-for-repo.
 async function queryIssues(octokit, repoContext, labels) {
-    return await octokit.issues.listForRepo(Object.assign(Object.assign({}, repoContext), { labels: labels.join(','), state: 'open' }));
+    const issuesResponse = await octokit.issues.listForRepo(Object.assign(Object.assign({}, repoContext), { labels: labels.join(','), state: 'open' }));
+    return issuesResponse.data.filter(issue => !issue.pull_request);
 }
 function generateReport(title, sections) {
     let result = '';
