@@ -8884,14 +8884,14 @@ function* sectionSummary(section) {
 function* sectionDetails(section) {
     const owners = sumIssuesForOwners(section.issues);
     yield h3(`${section.status} ${section.section} ${link('(query)', 'https://github.com')}`); // TODO
-    yield `Total: ${section.issues.length}`;
-    yield `Threshold: ${section.threshold}`;
-    yield `Labels: ${section.labels.map(code).join(', ')}`;
+    yield `Total: ${section.issues.length}\n`;
+    yield `Threshold: ${section.threshold}\n`;
+    yield `Labels: ${section.labels.map(code).join(', ')}\n`;
     yield '| Owner | Count |';
     yield '| -- | -- |';
     for (const key of Object.keys(owners)) {
         // `key` is the owner's login
-        yield `| ${link(key, owners[key].url)} | ${owners[key]} |`;
+        yield `| ${link(key, owners[key].url)} | ${owners[key].count} |`;
     }
 }
 // Markdown and HTML helpers -- not the least bit safe for production.
