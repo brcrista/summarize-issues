@@ -34,7 +34,7 @@ function* sectionDetails(section: Section) {
 
     for (const key of Object.keys(owners)) {
         // `key` is the owner's login
-        yield `| ${link(key, owners[key].url)} | ${owners[key]} |`;
+        yield `| ${link(key, owners[key].url)} | ${owners[key].count} |`;
     }
 }
 
