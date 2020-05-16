@@ -25,3 +25,4 @@ jobs:
         title: 'My Issues Report'
         outputPath: 'IssuesReport.md'
         configPath: '__tests__/issues-report.json'
+        token: ${{ secrets.GITHUB_TOKEN }}

@@ -4,6 +4,8 @@
 
 GitHub Action that generates a Markdown summary of the issues in a repo.
 
+See a full example at https://github.com/brcrista/summarize-issues-test.
+
 ## Example
 
 ```yml
@@ -29,6 +31,7 @@ jobs:
         title: 'My Issues Report'
         configPath: '.github/workflows/issues-report-config.json'
         outputPath: ${{ env.OUTPUT_FILE_NAME }}
+        token: ${{ secrets.GITHUB_TOKEN }}
 
     - name: "Commit if any changes were made"
       run: |
