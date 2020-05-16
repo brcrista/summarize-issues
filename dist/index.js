@@ -122,14 +122,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.run = void 0;
 const fs = __importStar(__webpack_require__(747));
 const markdown = __importStar(__webpack_require__(716));
+const status = __importStar(__webpack_require__(895));
 function run(inputs) {
     console.log(`Reading the config file at ${inputs.configPath} ...`);
     const config = fs.readFileSync(inputs.configPath, 'utf8');
-    const sections = JSON.parse(config);
+    const configSections = JSON.parse(config);
+    console.log('Querying for issues ...');
+    const sections = [];
+    for (const configSection of configSections) {
+        const issues = ['hello']; // TODO
+        sections.push(Object.assign(Object.assign({}, configSection), { issues, status: status.getStatus(issues.length, configSection.threshold) }));
+    }
+    ;
     console.log('Generating the report Markdown ...');
     const report = generateReport(inputs.title, sections);
     console.log(`Writing the Markdown to ${inputs.outputPath} ...`);
-    // Write the Markdown to the output file
     fs.writeFileSync(inputs.outputPath, report, 'utf8');
     console.log('Done!');
 }
@@ -492,39 +499,47 @@ module.exports = require("path");
 
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateDetails = exports.generateSummary = void 0;
-const hardcodedSectionSummary = `
-### Summary of Another section
-| Section Title | Labels | Threshold | Count | Status |
-| -- | -- | -- | -- | -- |
-| [Section Title](Link to Section Below) | \`bug\` | 2 | 0 | :green_heart: |
-`;
-const hardcodedSectionDescription = `
-## Details
-### :green_heart: Repair items [Link to Query](Link)
-Total : 5
-Threshold : 10
-Labels : \`incident-repair\`, \`short-term\`
-| Owner | Count |
-| -- | -- |
-| [PersonA](Link) | 5 |
-| [PersonB](Link) | 5 |
-`;
 function* generateSummary(title, sections) {
     yield h3(title);
     for (const section of sections) {
-        yield hardcodedSectionSummary;
+        yield* sectionSummary(section);
     }
 }
 exports.generateSummary = generateSummary;
 function* generateDetails(sections) {
     yield h2('Details');
     for (const section of sections) {
-        yield hardcodedSectionDescription;
+        yield* sectionDetails(section);
     }
 }
 exports.generateDetails = generateDetails;
+function* sectionSummary(section) {
+    yield h3(`Summary of ${section.section}`);
+    yield '| Section Title | Labels | Threshold | Count | Status |';
+    yield '| -- | -- | -- | -- | -- |';
+    // TODO the link doesn't work
+    yield `| ${link(section.section, '#' + hyphenate(section.section))} | ${section.labels.map(code).join(', ')} | ${section.threshold} | ${section.issues.length} | ${section.status} |`;
+}
+function* sectionDetails(section) {
+    yield h3(`${section.status} ${section.section} ${link('(query)', 'https://github.com')}`); // TODO
+    yield `Total: ${section.issues.length}`;
+    yield `Threshold: ${section.threshold}`;
+    yield `Labels: ${section.labels.map(code).join(', ')}`;
+    yield '| Owner | Count |';
+    yield '| -- | -- |';
+    yield `| ${link('PersonA', 'https://github.com')} | {5} |`; // TODO
+    yield `| ${link('PersonB', 'https://github.com')} | {5} |`; // TODO
+}
+// Markdown and HTML helpers -- not the least bit safe for production.
 const h2 = (text) => `## ${text}`;
 const h3 = (text) => `### ${text}`;
+const link = (text, href) => `[${text}](${href})`;
+const code = (text) => `\`${text}\``;
+// Useful for converting a header name to an HTML ID in a hacky way
+function hyphenate(headerName) {
+    // Not entirely correct; should replace 1 or more spaces.
+    return headerName.replace(' ', '-');
+}
 
 
 /***/ }),
@@ -533,6 +548,29 @@ const h3 = (text) => `### ${text}`;
 /***/ (function(module) {
 
 module.exports = require("fs");
+
+/***/ }),
+
+/***/ 895:
+/***/ (function(__unusedmodule, exports) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getStatus = void 0;
+function getStatus(issueCount, threshold) {
+    if (issueCount < threshold) {
+        return '💚🥳';
+    }
+    else if (issueCount === threshold) {
+        return '💛😬';
+    }
+    else {
+        return '❤️🥵';
+    }
+}
+exports.getStatus = getStatus;
+
 
 /***/ })
 
