@@ -1,10 +1,10 @@
 import * as core from '@actions/core'
 
-import { summarizeIssues } from './summarize-issues';
+import * as summarizeIssues from './summarize-issues';
 
 async function main(): Promise<void> {
     try {
-        summarizeIssues({
+        summarizeIssues.run({
             title: core.getInput('title'),
             outputPath: core.getInput('outputPath'),
             configPath: core.getInput('configPath')

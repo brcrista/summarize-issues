@@ -76,10 +76,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
-const summarize_issues_1 = __webpack_require__(201);
+const summarizeIssues = __importStar(__webpack_require__(201));
 async function main() {
     try {
-        summarize_issues_1.summarizeIssues({
+        summarizeIssues.run({
             title: core.getInput('title'),
             outputPath: core.getInput('outputPath'),
             configPath: core.getInput('configPath')
@@ -95,16 +95,57 @@ main().catch(err => console.error(err));
 /***/ }),
 
 /***/ 201:
-/***/ (function(__unusedmodule, exports) {
+/***/ (function(__unusedmodule, exports, __webpack_require__) {
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.summarizeIssues = void 0;
-function summarizeIssues(inputs) {
-    console.log(JSON.stringify(inputs));
+exports.run = void 0;
+const fs = __importStar(__webpack_require__(747));
+const markdown = __importStar(__webpack_require__(716));
+function run(inputs) {
+    console.log(`Reading the config file at ${inputs.configPath} ...`);
+    const config = fs.readFileSync(inputs.configPath, 'utf8');
+    const sections = JSON.parse(config);
+    console.log('Generating the report Markdown ...');
+    const report = generateReport(inputs.title, sections);
+    console.log(`Writing the Markdown to ${inputs.outputPath} ...`);
+    // Write the Markdown to the output file
+    fs.writeFileSync(inputs.outputPath, report, 'utf8');
+    console.log('Done!');
 }
-exports.summarizeIssues = summarizeIssues;
+exports.run = run;
+function generateReport(title, sections) {
+    let result = '';
+    for (const line of markdown.generateSummary(title, sections)) {
+        result += line;
+        result += '\n';
+    }
+    for (const line of markdown.generateDetails(sections)) {
+        result += line;
+        result += '\n';
+    }
+    return result;
+}
 
 
 /***/ }),
@@ -441,6 +482,57 @@ exports.getState = getState;
 /***/ (function(module) {
 
 module.exports = require("path");
+
+/***/ }),
+
+/***/ 716:
+/***/ (function(__unusedmodule, exports) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.generateDetails = exports.generateSummary = void 0;
+const hardcodedSectionSummary = `
+### Summary of Another section
+| Section Title | Labels | Threshold | Count | Status |
+| -- | -- | -- | -- | -- |
+| [Section Title](Link to Section Below) | \`bug\` | 2 | 0 | :green_heart: |
+`;
+const hardcodedSectionDescription = `
+## Details
+### :green_heart: Repair items [Link to Query](Link)
+Total : 5
+Threshold : 10
+Labels : \`incident-repair\`, \`short-term\`
+| Owner | Count |
+| -- | -- |
+| [PersonA](Link) | 5 |
+| [PersonB](Link) | 5 |
+`;
+function* generateSummary(title, sections) {
+    yield h3(title);
+    for (const section of sections) {
+        yield hardcodedSectionSummary;
+    }
+}
+exports.generateSummary = generateSummary;
+function* generateDetails(sections) {
+    yield h2('Details');
+    for (const section of sections) {
+        yield hardcodedSectionDescription;
+    }
+}
+exports.generateDetails = generateDetails;
+const h2 = (text) => `## ${text}`;
+const h3 = (text) => `### ${text}`;
+
+
+/***/ }),
+
+/***/ 747:
+/***/ (function(module) {
+
+module.exports = require("fs");
 
 /***/ })
 

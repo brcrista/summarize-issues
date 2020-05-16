@@ -1,5 +1,5 @@
-import * as cp from 'child_process';
-import * as path from 'path';
+// import * as cp from 'child_process';
+// import * as path from 'path';
 
 // test('throws invalid number', async () => {
 //   const input = parseInt('foo', 10);
@@ -15,14 +15,14 @@ import * as path from 'path';
 // })
 
 test('Run the action end-to-end', () => {
-    process.env['INPUT_TITLE'] = 'My Issues Report';
-    process.env['INPUT_OUTPUTPATH'] = 'IssuesReport.md';
-    process.env['INPUT_CONFIGPATH'] = 'issues-report.json';
+//     process.env['INPUT_TITLE'] = 'My Issues Report';
+//     process.env['INPUT_OUTPUTPATH'] = '../__tests__/IssuesReport.md';
+//     process.env['INPUT_CONFIGPATH'] = '../__tests__/issues-report.json';
 
-    const entryPoint = path.join(__dirname, '..', 'lib', 'main.js');
-    const options = {
-        env: process.env
-    };
+//     const entryPoint = path.join(__dirname, '..', 'dist', 'index.js');
+//     const options = {
+//         env: process.env
+//     };
 
-    console.log(cp.execSync(`node ${entryPoint}`, options).toString());
+//     console.log(cp.execSync(`node ${entryPoint}`, options).toString());
 });
