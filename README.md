@@ -70,27 +70,31 @@ This will commit a Markdown file named `IssuesReport.md` that looks like this:
 ### Summary of Repair items
 | Section Title | Labels | Threshold | Count | Status |
 | -- | -- | -- | -- | -- |
-| [Section Title](Link to Section Below) | `incident-repair`, `short-term` | 10 | 5 | :green_heart: |
-
+| [Repair items](#Repair-items) | `incident-repair`, `short-term` | 10 | 2 | 💚🥳 |
 ### Summary of Another section
 | Section Title | Labels | Threshold | Count | Status |
 | -- | -- | -- | -- | -- |
-| [Section Title](Link to Section Below) | `bug` | 2 | 0 | :green_heart: |
-
+| [Another section](#Another-section) | `bug` | 2 | 2 | 💛😬 |
 ## Details
-### :green_heart: Repair items [Link to Query](Link)
-Total : 5
-Threshold : 10
-Labels : `incident-repair`, `short-term`
-| Owner | Count |
-| -- | -- |
-| [PersonA](Link) | 5 |
-| [PersonB](Link) | 5 |
+### 💚🥳 Repair items [(query)](https://github.com/some/query/url)
+Total: 2
 
-### :green_heart: Another section [Link to Query](Link)
-Total : 0
-Threshold : 2
-Labels : `bug`
+Threshold: 10
+
+Labels: `incident-repair`, `short-term`
+
 | Owner | Count |
 | -- | -- |
+| [brcrista](https://github.com/brcrista) | 1 |
+### 💛😬 Another section [(query)](https://github.com/some/query/url)
+Total: 2
+
+Threshold: 2
+
+Labels: `bug`
+
+| Owner | Count |
+| -- | -- |
+| [brcrista](https://github.com/brcrista) | 1 |
+
 ```
