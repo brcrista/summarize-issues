@@ -24,4 +24,4 @@ jobs:
       with:
         title: 'My Issues Report'
         outputPath: 'IssuesReport.md'
-        configPath: 'issues-report.json'
+        configPath: '__tests__/issues-report.json'
