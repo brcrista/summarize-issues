@@ -3521,7 +3521,8 @@ async function main() {
             title: core.getInput('title'),
             configPath: core.getInput('configPath'),
             outputPath: core.getInput('outputPath'),
-            octokit: new github.GitHub(core.getInput('token'))
+            octokit: new github.GitHub(core.getInput('token')),
+            repoContext: Object.assign({}, github.context.repo)
         });
     }
     catch (error) {
@@ -3569,7 +3570,7 @@ async function run(inputs) {
     console.log('Querying for issues ...');
     const sections = [];
     for (const configSection of configSections) {
-        const issuesResponse = await queryIssues('repo', 'owner', configSection.labels, inputs.octokit); // TODO
+        const issuesResponse = await queryIssues(inputs.octokit, inputs.repoContext, configSection.labels);
         const issues = issuesResponse.data;
         sections.push(Object.assign(Object.assign({}, configSection), { issues, status: status.getStatus(issues.length, configSection.threshold) }));
     }
@@ -3581,13 +3582,9 @@ async function run(inputs) {
     console.log('Done!');
 }
 exports.run = run;
-async function queryIssues(owner, repo, labels, octokit) {
-    return await octokit.issues.listForRepo({
-        owner,
-        repo,
-        labels: labels.join(','),
-        state: 'open'
-    });
+// See https://octokit.github.io/rest.js/v17#issues-list-for-repo.
+async function queryIssues(octokit, repoContext, labels) {
+    return await octokit.issues.listForRepo(Object.assign(Object.assign({}, repoContext), { labels: labels.join(','), state: 'open' }));
 }
 function generateReport(title, sections) {
     let result = '';

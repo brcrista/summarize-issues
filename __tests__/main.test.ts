@@ -9,7 +9,8 @@ test('Run the action end-to-end through its API', async () => {
         title: 'test',
         configPath: path.join(__dirname, 'issues-report.json'),
         outputPath: path.join(__dirname, 'result.md'),
-        octokit: <Octokit>mocktokit
+        octokit: <Octokit>mocktokit,
+        repoContext: { owner: 'test', repo: 'repo' }
     });
 });
 
