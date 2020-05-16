@@ -4,6 +4,8 @@
 
 GitHub Action that generates a Markdown summary of the issues in a repo.
 
+See a full example at https://github.com/brcrista/summarize-issues-test.
+
 ## Example
 
 ```yml
