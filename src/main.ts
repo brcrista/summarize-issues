@@ -6,8 +6,8 @@ async function main(): Promise<void> {
     try {
         summarizeIssues.run({
             title: core.getInput('title'),
-            outputPath: core.getInput('outputPath'),
-            configPath: core.getInput('configPath')
+            configPath: core.getInput('configPath'),
+            outputPath: core.getInput('outputPath')
         });
     } catch (error) {
         core.setFailed(error.message);

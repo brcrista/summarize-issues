@@ -1,5 +1,5 @@
 # Test output files
-__tests__/IssuesReport.md
+__tests__/*.md
 
 # Dependency directory
 node_modules

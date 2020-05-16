@@ -4,14 +4,43 @@
 
 GitHub Action that generates a Markdown summary of the issues in a repo.
 
-## Usage
+## Example
 
 ```yml
-- uses: brcrista/summarize-issues@dev
-  with:
-    title: 'My Issues Report'
-    outputPath: 'IssuesReport.md'
-    configPath: 'issues-report.json'
+name: Generate issues report
+
+on: issues
+
+env:
+  OUTPUT_FILE_NAME: IssuesReport.md
+  COMMITTER_EMAIL: 33549821+brcrista@users.noreply.github.com
+  COMMITTER_NAME: Brian Cristante
+  COMMITTER_USERNAME: brcrista
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: brcrista/summarize-issues@dev
+      with:
+        title: 'My Issues Report'
+        configPath: '.github/workflows/issues-report-config.json'
+        outputPath: ${{ env.OUTPUT_FILE_NAME }}
+
+    - name: "Commit if any changes were made"
+      run: |
+        git remote add github "https://$COMMITTER_USERNAME:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY.git"
+        git pull github ${GITHUB_REF} --ff-only
+        if [[ `git status --porcelain` ]]; then
+          git add ${OUTPUT_FILE_NAME}
+          git config --global user.email $COMMITTER_EMAIL
+          git config --global user.name $COMMITTER_NAME
+          git commit -m "Update $OUTPUT_FILE_NAME"
+          git push github HEAD:${GITHUB_REF}
+        fi
 ```
 
 where `issues-report.json` looks like:

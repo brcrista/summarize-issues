@@ -4,8 +4,8 @@ import * as markdown from './markdown';
 
 export interface Inputs {
     title: string,
-    outputPath: string,
-    configPath: string
+    configPath: string,
+    outputPath: string
 }
 
 export interface Section {
