@@ -52,33 +52,42 @@ where `issues-report.json` looks like:
 
 ```json
 [
-  {
-    "section": "Repair items",
-    "labels": ["incident-repair", "short-term"],
-    "threshold": 10
-  },
-  {
-    "section": "Another section",
-    "labels": ["bug"],
-    "threshold": 2
-  }
-]
+    {
+      "section": "Section with green status",
+      "labels": ["incident-repair", "short-term"],
+      "threshold": 10
+    },
+    {
+      "section": "Section with yellow status",
+      "labels": ["needs-triage"],
+      "threshold": 2
+    },
+    {
+      "section": "Section with red status",
+      "labels": ["bug"],
+      "threshold": 1
+    }
+  ]
 ```
 
 This will commit a Markdown file named `IssuesReport.md` that looks like this:
 
 ```markdown
 ### My Issues Report
-### Summary of Repair items
+### Summary of Section with green status
 | Section Title | Labels | Threshold | Count | Status |
 | -- | -- | -- | -- | -- |
-| [Repair items](#Repair-items) | `incident-repair`, `short-term` | 10 | 2 | 💚🥳 |
-### Summary of Another section
+| [Section with green status](#-Section-with green status-query) | `incident-repair`, `short-term` | 10 | 2 | 💚🥳 |
+### Summary of Section with yellow status
 | Section Title | Labels | Threshold | Count | Status |
 | -- | -- | -- | -- | -- |
-| [Another section](#Another-section) | `bug` | 2 | 2 | 💛😬 |
+| [Section with yellow status](#-Section-with yellow status-query) | `needs-triage` | 2 | 2 | 💛😬 |
+### Summary of Section with red status
+| Section Title | Labels | Threshold | Count | Status |
+| -- | -- | -- | -- | -- |
+| [Section with red status](#-Section-with red status-query) | `bug` | 1 | 2 | ❤️🥵 |
 ## Details
-### 💚🥳 Repair items [(query)](https://github.com/some/query/url)
+### 💚🥳 Section with green status [(query)](https://github.com/test/repo/issues?q=is%3Aissue+is%3Aopen+label%3Aincident-repair+label%3Ashort-term)
 Total: 2
 
 Threshold: 10
@@ -87,16 +96,26 @@ Labels: `incident-repair`, `short-term`
 
 | Owner | Count |
 | -- | -- |
-| [brcrista](https://github.com/brcrista) | 1 |
-### 💛😬 Another section [(query)](https://github.com/some/query/url)
+| [brcrista](https://github.com/test/repo/issues?q=is%3Aissue+is%3Aopen+label%3Aincident-repair+label%3Ashort-term+assignee%3Abrcrista) | 1 |
+### 💛😬 Section with yellow status [(query)](https://github.com/test/repo/issues?q=is%3Aissue+is%3Aopen+label%3Aneeds-triage)
 Total: 2
 
 Threshold: 2
+
+Labels: `needs-triage`
+
+| Owner | Count |
+| -- | -- |
+| [brcrista](https://github.com/test/repo/issues?q=is%3Aissue+is%3Aopen+label%3Aneeds-triage+assignee%3Abrcrista) | 1 |
+### ❤️🥵 Section with red status [(query)](https://github.com/test/repo/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
+Total: 2
+
+Threshold: 1
 
 Labels: `bug`
 
 | Owner | Count |
 | -- | -- |
-| [brcrista](https://github.com/brcrista) | 1 |
+| [brcrista](https://github.com/test/repo/issues?q=is%3Aissue+is%3Aopen+label%3Abug+assignee%3Abrcrista) | 1 |
 
 ```
