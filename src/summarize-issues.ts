@@ -29,7 +29,7 @@ export async function run(inputs: {
     };
 
     console.log('Generating the report Markdown ...');
-    const report = generateReport(inputs.title, sections);
+    const report = generateReport(inputs.title, sections, inputs.repoContext);
 
     console.log(`Writing the Markdown to ${inputs.outputPath} ...`);
     fs.writeFileSync(inputs.outputPath, report, 'utf8');
@@ -48,14 +48,14 @@ async function queryIssues( octokit: Octokit, repoContext: RepoContext, labels: 
     return issuesResponse.data.filter(issue => !issue.pull_request);
 }
 
-function generateReport(title: string, sections: Section[]): string {
+function generateReport(title: string, sections: Section[], repoContext: RepoContext): string {
     let result = '';
     for (const line of markdown.generateSummary(title, sections)) {
         result += line;
         result += '\n';
     }
 
-    for (const line of markdown.generateDetails(sections)) {
+    for (const line of markdown.generateDetails(sections, repoContext)) {
         result += line;
         result += '\n';
     }
