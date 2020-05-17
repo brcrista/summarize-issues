@@ -34,7 +34,8 @@ function* sectionDetails(section: Section, repoContext: RepoContext) {
 
     for (const key of Object.keys(owners)) {
         // `key` is the owner's login
-        yield `| ${link(key, owners[key].url)} | ${owners[key].count} |`;
+        const queryUrl = issuesQuery(repoContext, section.labels, key);
+        yield `| ${link(key, queryUrl)} | ${owners[key]} |`;
     }
 }
 
@@ -58,21 +59,18 @@ function issuesQuery(repoContext: RepoContext, labels: string[], assignee?: stri
     }
 
     const queryString = encodeURIComponent(`${queryInputs.join('+')}`);
-
     return `https://github.com/${repoContext.owner}/${repoContext.repo}/issues?q=${queryString}`;
 }
 
-// Get a mapping of owner logins to their URL and the number of issues they have in this section.
-// Using `Map` here might be easier, but I'm not sure if it will get owner equality right.
-// That is, I don't know if it hashes the keys.
+// Get a mapping of owner logins to the number of issues they have in this section.
 function sumIssuesForOwners(issues: Issue[]) {
-    const result: { [owner: string]: { url: string, count: number } } = {};
+    const result: { [owner: string]: number } = {};
     for (const issue of issues) {
         for (const owner of issue.assignees) {
             if (!result[owner.login]) {
-                result[owner.login] = { url: owner.html_url, count: 0 };
+                result[owner.login] = 0;
             }
-            result[owner.login].count += 1
+            result[owner.login] += 1
         }
     }
 

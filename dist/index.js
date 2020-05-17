@@ -3575,7 +3575,7 @@ async function run(inputs) {
     }
     ;
     console.log('Generating the report Markdown ...');
-    const report = generateReport(inputs.title, sections);
+    const report = generateReport(inputs.title, sections, inputs.repoContext);
     console.log(`Writing the Markdown to ${inputs.outputPath} ...`);
     fs.writeFileSync(inputs.outputPath, report, 'utf8');
     console.log('Done!');
@@ -3586,13 +3586,13 @@ async function queryIssues(octokit, repoContext, labels) {
     const issuesResponse = await octokit.issues.listForRepo(Object.assign(Object.assign({}, repoContext), { labels: labels.join(','), state: 'open' }));
     return issuesResponse.data.filter(issue => !issue.pull_request);
 }
-function generateReport(title, sections) {
+function generateReport(title, sections, repoContext) {
     let result = '';
     for (const line of markdown.generateSummary(title, sections)) {
         result += line;
         result += '\n';
     }
-    for (const line of markdown.generateDetails(sections)) {
+    for (const line of markdown.generateDetails(sections, repoContext)) {
         result += line;
         result += '\n';
     }
@@ -8867,10 +8867,10 @@ function* generateSummary(title, sections) {
     }
 }
 exports.generateSummary = generateSummary;
-function* generateDetails(sections) {
+function* generateDetails(sections, repoContext) {
     yield h2('Details');
     for (const section of sections) {
-        yield* sectionDetails(section);
+        yield* sectionDetails(section, repoContext);
     }
 }
 exports.generateDetails = generateDetails;
@@ -8881,9 +8881,9 @@ function* sectionSummary(section) {
     // TODO the link doesn't work
     yield `| ${link(section.section, '#' + hyphenate(section.section))} | ${section.labels.map(code).join(', ')} | ${section.threshold} | ${section.issues.length} | ${section.status} |`;
 }
-function* sectionDetails(section) {
+function* sectionDetails(section, repoContext) {
     const owners = sumIssuesForOwners(section.issues);
-    yield h3(`${section.status} ${section.section} ${link('(query)', 'https://github.com')}`); // TODO
+    yield h3(`${section.status} ${section.section} ${link('(query)', issuesQuery(repoContext, section.labels))}`);
     yield `Total: ${section.issues.length}\n`;
     yield `Threshold: ${section.threshold}\n`;
     yield `Labels: ${section.labels.map(code).join(', ')}\n`;
@@ -8891,7 +8891,8 @@ function* sectionDetails(section) {
     yield '| -- | -- |';
     for (const key of Object.keys(owners)) {
         // `key` is the owner's login
-        yield `| ${link(key, owners[key].url)} | ${owners[key].count} |`;
+        const queryUrl = issuesQuery(repoContext, section.labels, key);
+        yield `| ${link(key, queryUrl)} | ${owners[key]} |`;
     }
 }
 // Markdown and HTML helpers -- not the least bit safe for production.
@@ -8904,17 +8905,24 @@ function hyphenate(headerName) {
     // Not entirely correct; should replace 1 or more spaces.
     return headerName.replace(' ', '-');
 }
-// Get a mapping of owner logins to their URL and the number of issues they have in this section.
-// Using `Map` here might be easier, but I'm not sure if it will get owner equality right.
-// That is, I don't know if it hashes the keys.
+// Construct a URL like https://github.com/brcrista/summarize-issues-test/issues?q=is%3Aissue+is%3Aopen+label%3Aincident-repair+label%3Ashort-term+
+function issuesQuery(repoContext, labels, assignee) {
+    const queryInputs = ['is:issue', 'is:open'].concat(labels.map(label => `label:${label}`));
+    if (assignee) {
+        queryInputs.push(`assignee:${assignee}`);
+    }
+    const queryString = encodeURIComponent(`${queryInputs.join('+')}`);
+    return `https://github.com/${repoContext.owner}/${repoContext.repo}/issues?q=${queryString}`;
+}
+// Get a mapping of owner logins to the number of issues they have in this section.
 function sumIssuesForOwners(issues) {
     const result = {};
     for (const issue of issues) {
         for (const owner of issue.assignees) {
             if (!result[owner.login]) {
-                result[owner.login] = { url: owner.html_url, count: 0 };
+                result[owner.login] = 0;
             }
-            result[owner.login].count += 1;
+            result[owner.login] += 1;
         }
     }
     return result;
