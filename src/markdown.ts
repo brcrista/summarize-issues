@@ -58,7 +58,8 @@ function issuesQuery(repoContext: RepoContext, labels: string[], assignee?: stri
         queryInputs.push(`assignee:${assignee}`);
     }
 
-    const queryString = encodeURIComponent(`${queryInputs.join('+')}`);
+    // The `+` signs should not be encoded for the query to work.
+    const queryString = queryInputs.map(encodeURIComponent).join('+');
     return `https://github.com/${repoContext.owner}/${repoContext.repo}/issues?q=${queryString}`;
 }
 

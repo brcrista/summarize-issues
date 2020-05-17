@@ -8911,7 +8911,8 @@ function issuesQuery(repoContext, labels, assignee) {
     if (assignee) {
         queryInputs.push(`assignee:${assignee}`);
     }
-    const queryString = encodeURIComponent(`${queryInputs.join('+')}`);
+    // The `+` signs should not be encoded for the query to work.
+    const queryString = queryInputs.map(encodeURIComponent).join('+');
     return `https://github.com/${repoContext.owner}/${repoContext.repo}/issues?q=${queryString}`;
 }
 // Get a mapping of owner logins to the number of issues they have in this section.
