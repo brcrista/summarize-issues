@@ -11,7 +11,9 @@ See a full example at https://github.com/brcrista/summarize-issues-test.
 ```yml
 name: Generate issues report
 
-on: issues
+on:
+  schedule:
+    - cron: 0/50 * * * 1-5
 
 env:
   OUTPUT_FILE_NAME: IssuesReport.md
