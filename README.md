@@ -52,22 +52,22 @@ where `issues-report.json` looks like:
 
 ```json
 [
-    {
-      "section": "Section with green status",
-      "labels": ["incident-repair", "short-term"],
-      "threshold": 10
-    },
-    {
-      "section": "Section with yellow status",
-      "labels": ["needs-triage"],
-      "threshold": 2
-    },
-    {
-      "section": "Section with red status",
-      "labels": ["bug"],
-      "threshold": 1
-    }
-  ]
+  {
+    "section": "Section with green status",
+    "labels": ["incident-repair", "short-term"],
+    "threshold": 10
+  },
+  {
+    "section": "Section with yellow status",
+    "labels": ["needs-triage"],
+    "threshold": 2
+  },
+  {
+    "section": "Section with red status",
+    "labels": ["bug"],
+    "threshold": 1
+  }
+]
 ```
 
 This will commit a Markdown file named `IssuesReport.md` that looks like this:
