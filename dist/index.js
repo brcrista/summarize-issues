@@ -8878,8 +8878,8 @@ function* sectionSummary(section) {
     yield h3(`Summary of ${section.section}`);
     yield '| Section Title | Labels | Threshold | Count | Status |';
     yield '| -- | -- | -- | -- | -- |';
-    // TODO the link doesn't work
-    yield `| ${link(section.section, '#' + hyphenate(section.section))} | ${section.labels.map(code).join(', ')} | ${section.threshold} | ${section.issues.length} | ${section.status} |`;
+    const sectionAnchor = '#' + `-${hyphenate(section.section)}-query`;
+    yield `| ${link(section.section, sectionAnchor)} | ${section.labels.map(code).join(', ')} | ${section.threshold} | ${section.issues.length} | ${section.status} |`;
 }
 function* sectionDetails(section, repoContext) {
     const owners = sumIssuesForOwners(section.issues);
