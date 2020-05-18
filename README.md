@@ -74,18 +74,12 @@ This will commit a Markdown file named `IssuesReport.md` that looks like this:
 
 ```markdown
 ### My Issues Report
-### Summary of Section with green status
+### Summary
 | Section Title | Labels | Threshold | Count | Status |
 | -- | -- | -- | -- | -- |
-| [Section with green status](#-Section-with green status-query) | `incident-repair`, `short-term` | 10 | 2 | 💚🥳 |
-### Summary of Section with yellow status
-| Section Title | Labels | Threshold | Count | Status |
-| -- | -- | -- | -- | -- |
-| [Section with yellow status](#-Section-with yellow status-query) | `needs-triage` | 2 | 2 | 💛😬 |
-### Summary of Section with red status
-| Section Title | Labels | Threshold | Count | Status |
-| -- | -- | -- | -- | -- |
-| [Section with red status](#-Section-with red status-query) | `bug` | 1 | 2 | ❤️🥵 |
+| [Section with green status](#-Section-with-green-status-query) | `incident-repair`, `short-term` | 10 | 2 | 💚🥳 |
+| [Section with yellow status](#-Section-with-yellow-status-query) | `needs-triage` | 2 | 2 | 💛😬 |
+| [Section with red status](#-Section-with-red-status-query) | `bug` | 1 | 2 | ❤️🥵 |
 ## Details
 ### 💚🥳 Section with green status [(query)](https://github.com/test/repo/issues?q=is%3Aissue+is%3Aopen+label%3Aincident-repair+label%3Ashort-term)
 Total: 2
@@ -117,5 +111,4 @@ Labels: `bug`
 | Owner | Count |
 | -- | -- |
 | [brcrista](https://github.com/test/repo/issues?q=is%3Aissue+is%3Aopen+label%3Abug+assignee%3Abrcrista) | 1 |
-
 ```

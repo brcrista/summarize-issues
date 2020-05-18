@@ -8862,6 +8862,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateDetails = exports.generateSummary = void 0;
 function* generateSummary(title, sections) {
     yield h3(title);
+    yield h3('Summary');
+    yield '| Section Title | Labels | Threshold | Count | Status |';
+    yield '| -- | -- | -- | -- | -- |';
     for (const section of sections) {
         yield* sectionSummary(section);
     }
@@ -8875,9 +8878,6 @@ function* generateDetails(sections, repoContext) {
 }
 exports.generateDetails = generateDetails;
 function* sectionSummary(section) {
-    yield h3(`Summary of ${section.section}`);
-    yield '| Section Title | Labels | Threshold | Count | Status |';
-    yield '| -- | -- | -- | -- | -- |';
     const sectionAnchor = '#' + `-${hyphenate(section.section)}-query`;
     yield `| ${link(section.section, sectionAnchor)} | ${section.labels.map(code).join(', ')} | ${section.threshold} | ${section.issues.length} | ${section.status} |`;
 }

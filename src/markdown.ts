@@ -2,6 +2,9 @@ import type { Issue, RepoContext, Section } from './types';
 
 export function* generateSummary(title: string, sections: Section[]) {
     yield h3(title);
+    yield h3('Summary');
+    yield '| Section Title | Labels | Threshold | Count | Status |';
+    yield '| -- | -- | -- | -- | -- |';
     for (const section of sections) {
         yield* sectionSummary(section);
     }
@@ -15,10 +18,6 @@ export function* generateDetails(sections: Section[], repoContext: RepoContext) 
 }
 
 function* sectionSummary(section: Section) {
-    yield h3(`Summary of ${section.section}`);
-    yield '| Section Title | Labels | Threshold | Count | Status |';
-    yield '| -- | -- | -- | -- | -- |';
-
     const sectionAnchor = '#' + `-${hyphenate(section.section)}-query`;
     yield `| ${link(section.section, sectionAnchor)} | ${section.labels.map(code).join(', ')} | ${section.threshold} | ${section.issues.length} | ${section.status} |`;
 }
