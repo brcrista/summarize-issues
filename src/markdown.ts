@@ -52,6 +52,14 @@ function hyphenate(headerName: string) {
 
 // Construct a URL like https://github.com/brcrista/summarize-issues-test/issues?q=is%3Aissue+is%3Aopen+label%3Aincident-repair+label%3Ashort-term+
 function issuesQuery(repoContext: RepoContext, labels: string[], assignee?: string) {
+    // If the label contains a space, the query string needs to have it in quotes.
+    labels = labels.map(label => {
+        if (label.includes(' ')) {
+            return `"${label}"`;
+        } else {
+            return label;
+        }
+    });
     const queryInputs = ['is:issue','is:open'].concat(labels.map(label => `label:${label}`));
     if (assignee) {
         queryInputs.push(`assignee:${assignee}`);

@@ -1,7 +1,7 @@
 [
     {
       "section": "Section with green status",
-      "labels": ["incident-repair", "short-term"],
+      "labels": ["incident-repair", "short term"],
       "threshold": 10
     },
     {
@@ -14,4 +14,4 @@
       "labels": ["bug"],
       "threshold": 1
     }
-  ]
+]
