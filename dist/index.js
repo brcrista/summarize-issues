@@ -8902,8 +8902,7 @@ const link = (text, href) => `[${text}](${href})`;
 const code = (text) => `\`${text}\``;
 // Useful for converting a header name to an HTML ID in a hacky way
 function hyphenate(headerName) {
-    // Not entirely correct; should replace 1 or more spaces.
-    return headerName.replace(' ', '-');
+    return headerName.replace(/\s+/g, '-');
 }
 // Construct a URL like https://github.com/brcrista/summarize-issues-test/issues?q=is%3Aissue+is%3Aopen+label%3Aincident-repair+label%3Ashort-term+
 function issuesQuery(repoContext, labels, assignee) {
