@@ -1,6 +1,9 @@
 name: 'summarize-issues'
 description: 'GitHub Action that generates a Markdown summary of the issues in a repo.'
 author: 'Brian Cristante'
+branding:
+  icon: bar-chart-2
+  color: white
 inputs:
   title:
     description: 'title of the report'
