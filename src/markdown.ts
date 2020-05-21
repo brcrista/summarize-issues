@@ -50,7 +50,7 @@ const code = (text: string) => `\`${text}\``;
 // Useful for converting a header name to an HTML ID in a hacky way
 const hyphenate = (headerName: string) => headerName.replace(/\s+/g, '-');
 
-// Construct a URL like https://github.com/brcrista/summarize-issues-test/issues?q=is%3Aissue+is%3Aopen+label%3Aincident-repair+label%3Ashort-term+
+/** Construct a URL like `https://github.com/brcrista/summarize-issues-test/issues?q=is%3Aissue+is%3Aopen+label%3Aincident-repair+label%3Ashort-term`. */
 function issuesQuery(repoContext: RepoContext, labels: string[], assignee?: string) {
     // If the label contains a space, the query string needs to have it in quotes.
     labels = labels.map(label => {
@@ -76,7 +76,7 @@ function issuesQuery(repoContext: RepoContext, labels: string[], assignee?: stri
     return `https://github.com/${repoContext.owner}/${repoContext.repo}/issues?q=${queryString}`;
 }
 
-// Get a mapping of owner logins to the number of issues they have in this section.
+/** Get a mapping of owner logins to the number of issues they have in this section. */
 function sumIssuesForOwners(issues: Issue[]) {
     const result: { [owner: string]: number } = {};
 

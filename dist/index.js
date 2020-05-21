@@ -3561,6 +3561,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.run = void 0;
 const fs = __importStar(__webpack_require__(747));
+const iterable = __importStar(__webpack_require__(377));
 const markdown = __importStar(__webpack_require__(716));
 const status = __importStar(__webpack_require__(895));
 async function run(inputs) {
@@ -3587,16 +3588,7 @@ async function queryIssues(octokit, repoContext, labels) {
     return issuesResponse.data.filter(issue => !issue.pull_request);
 }
 function generateReport(title, sections, repoContext) {
-    let result = '';
-    for (const line of markdown.generateSummary(title, sections)) {
-        result += line;
-        result += '\n';
-    }
-    for (const line of markdown.generateDetails(sections, repoContext)) {
-        result += line;
-        result += '\n';
-    }
-    return result;
+    return Array.from(iterable.chain(markdown.generateSummary(title, sections), markdown.generateDetails(sections, repoContext))).join('\n');
 }
 
 
@@ -4553,6 +4545,24 @@ function deprecate (message) {
   console.warn(`DEPRECATED (@octokit/rest): ${message}`)
   loggedMessages[message] = 1
 }
+
+
+/***/ }),
+
+/***/ 377:
+/***/ (function(__unusedmodule, exports) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.chain = void 0;
+/** Join zero or more iterables into a single iterable. */
+function* chain(...iterables) {
+    for (const it of iterables) {
+        yield* it;
+    }
+}
+exports.chain = chain;
 
 
 /***/ }),
@@ -8904,7 +8914,7 @@ const link = (text, href) => `[${text}](${href})`;
 const code = (text) => `\`${text}\``;
 // Useful for converting a header name to an HTML ID in a hacky way
 const hyphenate = (headerName) => headerName.replace(/\s+/g, '-');
-// Construct a URL like https://github.com/brcrista/summarize-issues-test/issues?q=is%3Aissue+is%3Aopen+label%3Aincident-repair+label%3Ashort-term+
+/** Construct a URL like `https://github.com/brcrista/summarize-issues-test/issues?q=is%3Aissue+is%3Aopen+label%3Aincident-repair+label%3Ashort-term`. */
 function issuesQuery(repoContext, labels, assignee) {
     // If the label contains a space, the query string needs to have it in quotes.
     labels = labels.map(label => {
@@ -8929,7 +8939,7 @@ function issuesQuery(repoContext, labels, assignee) {
     const queryString = queryInputs.map(encodeURIComponent).join('+');
     return `https://github.com/${repoContext.owner}/${repoContext.repo}/issues?q=${queryString}`;
 }
-// Get a mapping of owner logins to the number of issues they have in this section.
+/** Get a mapping of owner logins to the number of issues they have in this section. */
 function sumIssuesForOwners(issues) {
     const result = {};
     for (const issue of issues) {
