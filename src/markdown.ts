@@ -41,16 +41,14 @@ function* sectionDetails(section: Section, repoContext: RepoContext) {
     }
 }
 
-// Markdown and HTML helpers -- not the least bit safe for production.
+// Markdown helpers -- not the least bit safe for handling user input, so don't copy these for general use.
 const h2 = (text: string) => `## ${text}`;
 const h3 = (text: string) => `### ${text}`;
 const link = (text: string, href: string) => `[${text}](${href})`;
 const code = (text: string) => `\`${text}\``;
 
 // Useful for converting a header name to an HTML ID in a hacky way
-function hyphenate(headerName: string) {
-    return headerName.replace(/\s+/g, '-');
-}
+const hyphenate = (headerName: string) => headerName.replace(/\s+/g, '-');
 
 // Construct a URL like https://github.com/brcrista/summarize-issues-test/issues?q=is%3Aissue+is%3Aopen+label%3Aincident-repair+label%3Ashort-term+
 function issuesQuery(repoContext: RepoContext, labels: string[], assignee?: string) {
@@ -62,9 +60,15 @@ function issuesQuery(repoContext: RepoContext, labels: string[], assignee?: stri
             return label;
         }
     });
+
     const queryInputs = ['is:issue','is:open'].concat(labels.map(label => `label:${label}`));
     if (assignee) {
-        queryInputs.push(`assignee:${assignee}`);
+        // Using a sentinel value is a hack, but it keeps the interface and implementation simple here.
+        if (assignee === unassignedKey) {
+            queryInputs.push(`no:assignee`);
+        } else {
+            queryInputs.push(`assignee:${assignee}`);
+        }
     }
 
     // The `+` signs should not be encoded for the query to work.
@@ -75,14 +79,26 @@ function issuesQuery(repoContext: RepoContext, labels: string[], assignee?: stri
 // Get a mapping of owner logins to the number of issues they have in this section.
 function sumIssuesForOwners(issues: Issue[]) {
     const result: { [owner: string]: number } = {};
+
     for (const issue of issues) {
-        for (const owner of issue.assignees) {
-            if (!result[owner.login]) {
-                result[owner.login] = 0;
+        if (issue.assignees.length > 0) {
+            for (const owner of issue.assignees) {
+                if (!result[owner.login]) {
+                    result[owner.login] = 0;
+                }
+                result[owner.login] += 1
             }
-            result[owner.login] += 1
+        } else {
+            if (!result[unassignedKey]) {
+                result[unassignedKey] = 0;
+            }
+            result[unassignedKey] += 1
         }
     }
 
     return result;
 }
+
+// Note that this isn't a valid GitHub login, so it won't conflict with a potential owner.
+// And yes, it is meant to be rendered as Markdown.
+const unassignedKey = "**Unassigned**";
