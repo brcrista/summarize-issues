@@ -32,7 +32,9 @@ function* sectionDetails(section: Section, repoContext: RepoContext) {
     yield '| Owner | Count |';
     yield '| -- | -- |';
 
-    for (const key of Object.keys(owners)) {
+    // Sort the table in descending order of issue count
+    const ownersByIssueCount = Object.keys(owners).sort((a, b) => owners[b] - owners[a]);
+    for (const key of ownersByIssueCount) {
         // `key` is the owner's login
         const queryUrl = issuesQuery(repoContext, section.labels, key);
         yield `| ${link(key, queryUrl)} | ${owners[key]} |`;
