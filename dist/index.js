@@ -3561,6 +3561,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.run = void 0;
 const fs = __importStar(__webpack_require__(747));
+const iterable = __importStar(__webpack_require__(377));
 const markdown = __importStar(__webpack_require__(716));
 const status = __importStar(__webpack_require__(895));
 async function run(inputs) {
@@ -3587,16 +3588,7 @@ async function queryIssues(octokit, repoContext, labels) {
     return issuesResponse.data.filter(issue => !issue.pull_request);
 }
 function generateReport(title, sections, repoContext) {
-    let result = '';
-    for (const line of markdown.generateSummary(title, sections)) {
-        result += line;
-        result += '\n';
-    }
-    for (const line of markdown.generateDetails(sections, repoContext)) {
-        result += line;
-        result += '\n';
-    }
-    return result;
+    return Array.from(iterable.chain(markdown.generateSummary(title, sections), markdown.generateDetails(sections, repoContext))).join('\n');
 }
 
 
@@ -4553,6 +4545,24 @@ function deprecate (message) {
   console.warn(`DEPRECATED (@octokit/rest): ${message}`)
   loggedMessages[message] = 1
 }
+
+
+/***/ }),
+
+/***/ 377:
+/***/ (function(__unusedmodule, exports) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.chain = void 0;
+/** Join zero or more iterables into a single iterable. */
+function* chain(...iterables) {
+    for (const it of iterables) {
+        yield* it;
+    }
+}
+exports.chain = chain;
 
 
 /***/ }),
@@ -8897,16 +8907,14 @@ function* sectionDetails(section, repoContext) {
         yield `| ${link(key, queryUrl)} | ${owners[key]} |`;
     }
 }
-// Markdown and HTML helpers -- not the least bit safe for production.
+// Markdown helpers -- not the least bit safe for handling user input, so don't copy these for general use.
 const h2 = (text) => `## ${text}`;
 const h3 = (text) => `### ${text}`;
 const link = (text, href) => `[${text}](${href})`;
 const code = (text) => `\`${text}\``;
 // Useful for converting a header name to an HTML ID in a hacky way
-function hyphenate(headerName) {
-    return headerName.replace(/\s+/g, '-');
-}
-// Construct a URL like https://github.com/brcrista/summarize-issues-test/issues?q=is%3Aissue+is%3Aopen+label%3Aincident-repair+label%3Ashort-term+
+const hyphenate = (headerName) => headerName.replace(/\s+/g, '-');
+/** Construct a URL like `https://github.com/brcrista/summarize-issues-test/issues?q=is%3Aissue+is%3Aopen+label%3Aincident-repair+label%3Ashort-term`. */
 function issuesQuery(repoContext, labels, assignee) {
     // If the label contains a space, the query string needs to have it in quotes.
     labels = labels.map(label => {
@@ -8919,25 +8927,42 @@ function issuesQuery(repoContext, labels, assignee) {
     });
     const queryInputs = ['is:issue', 'is:open'].concat(labels.map(label => `label:${label}`));
     if (assignee) {
-        queryInputs.push(`assignee:${assignee}`);
+        // Using a sentinel value is a hack, but it keeps the interface and implementation simple here.
+        if (assignee === unassignedKey) {
+            queryInputs.push(`no:assignee`);
+        }
+        else {
+            queryInputs.push(`assignee:${assignee}`);
+        }
     }
     // The `+` signs should not be encoded for the query to work.
     const queryString = queryInputs.map(encodeURIComponent).join('+');
     return `https://github.com/${repoContext.owner}/${repoContext.repo}/issues?q=${queryString}`;
 }
-// Get a mapping of owner logins to the number of issues they have in this section.
+/** Get a mapping of owner logins to the number of issues they have in this section. */
 function sumIssuesForOwners(issues) {
     const result = {};
     for (const issue of issues) {
-        for (const owner of issue.assignees) {
-            if (!result[owner.login]) {
-                result[owner.login] = 0;
+        if (issue.assignees.length > 0) {
+            for (const owner of issue.assignees) {
+                if (!result[owner.login]) {
+                    result[owner.login] = 0;
+                }
+                result[owner.login] += 1;
             }
-            result[owner.login] += 1;
+        }
+        else {
+            if (!result[unassignedKey]) {
+                result[unassignedKey] = 0;
+            }
+            result[unassignedKey] += 1;
         }
     }
     return result;
 }
+// Note that this isn't a valid GitHub login, so it won't conflict with a potential owner.
+// And yes, it is meant to be rendered as Markdown.
+const unassignedKey = "**Unassigned**";
 
 
 /***/ }),

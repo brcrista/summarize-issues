@@ -62,9 +62,6 @@ describe('The details section', () => {
                     assignees: []
                 },
                 {
-                    assignees: []
-                },
-                {
                     assignees: [{ login: 'user1' }]
                 },
                 // Give user2 more issues than user1 to test that the table is sorted in descending order and not FIFO
@@ -86,13 +83,14 @@ describe('The details section', () => {
         expect(details).toStrictEqual([
             '## Details',
             '### ❤️🥵 Bugs [(query)](https://github.com/test/repo/issues?q=is%3Aissue+is%3Aopen+label%3Abug)',
-            'Total: 6\n',
+            'Total: 5\n',
             'Threshold: 3\n',
             'Labels: `bug`\n',
             '| Owner | Count |',
             '| -- | -- |',
             '| [user2](https://github.com/test/repo/issues?q=is%3Aissue+is%3Aopen+label%3Abug+assignee%3Auser2) | 3 |',
-            '| [user1](https://github.com/test/repo/issues?q=is%3Aissue+is%3Aopen+label%3Abug+assignee%3Auser1) | 2 |'
+            '| [user1](https://github.com/test/repo/issues?q=is%3Aissue+is%3Aopen+label%3Abug+assignee%3Auser1) | 2 |',
+            "| [**Unassigned**](https://github.com/test/repo/issues?q=is%3Aissue+is%3Aopen+label%3Abug+no%3Aassignee) | 1 |",
         ]);
     });
 });

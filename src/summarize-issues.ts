@@ -2,6 +2,7 @@ import * as fs from 'fs';
 
 import type { Octokit } from '@octokit/rest';
 
+import * as iterable from './iterable';
 import * as markdown from './markdown';
 import * as status from './status';
 import type { ConfigSection, RepoContext, Section } from './types';
@@ -49,16 +50,8 @@ async function queryIssues( octokit: Octokit, repoContext: RepoContext, labels: 
 }
 
 function generateReport(title: string, sections: Section[], repoContext: RepoContext): string {
-    let result = '';
-    for (const line of markdown.generateSummary(title, sections)) {
-        result += line;
-        result += '\n';
-    }
-
-    for (const line of markdown.generateDetails(sections, repoContext)) {
-        result += line;
-        result += '\n';
-    }
-
-    return result;
+    return Array.from(iterable.chain(
+        markdown.generateSummary(title, sections),
+        markdown.generateDetails(sections, repoContext))
+    ).join('\n');
 }
