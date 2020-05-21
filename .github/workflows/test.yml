@@ -15,6 +15,11 @@ jobs:
     - run: npm run build
     - run: npm run pack
     - run: npm test
+    - uses: actions/upload-artifact@v2
+      with:
+        # This file gets produced by main.test.ts
+        name: test-markdown
+        path: test/result.md
 
   run:
     runs-on: ubuntu-latest
