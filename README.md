@@ -17,9 +17,9 @@ on:
 
 env:
   OUTPUT_FILE_NAME: IssuesReport.md
-  COMMITTER_EMAIL: 33549821+brcrista@users.noreply.github.com
-  COMMITTER_NAME: Brian Cristante
-  COMMITTER_USERNAME: brcrista
+  COMMITTER_EMAIL: actions@github.com
+  COMMITTER_NAME: github-actions
+  COMMITTER_USERNAME: github-actions
 
 jobs:
   build:
@@ -28,7 +28,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - uses: brcrista/summarize-issues@v1
+    - uses: brcrista/summarize-issues@v2
       with:
         title: 'My Issues Report'
         configPath: '.github/workflows/issues-report-config.json'
