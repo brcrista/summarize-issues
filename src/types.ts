@@ -5,7 +5,11 @@ import type { Status } from './status';
 // The type of `context` from `@actions/github`
 export interface RepoContext { owner: string, repo: string }
 
-export type Issue = Octokit.IssuesListForRepoResponseItem;
+export type Issue = {
+    assignees: Array<{
+        login: string
+    }>
+};
 
 // What comes out of the config file
 export interface ConfigSection {

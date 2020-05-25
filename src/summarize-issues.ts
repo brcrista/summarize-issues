@@ -51,7 +51,11 @@ async function queryIssues(octokit: Octokit, repoContext: RepoContext, labels: s
             labels: labels.join(','),
             state: 'open'
         },
-        (response: Octokit.Response<Octokit.IssuesListForRepoResponse>) => response.data.filter(issue => !issue.pull_request));
+        (response: Octokit.Response<Octokit.IssuesListForRepoResponse>) => response.data
+            // The response includes PRs. We don't want those.
+            .filter(issue => !issue.pull_request)
+            // Take just what we need in case the response is large.
+            .map(issue => { issue.assignees }));
 }
 
 function generateReport(title: string, sections: Section[], repoContext: RepoContext): string {
