@@ -5,7 +5,7 @@ import type { Octokit } from '@octokit/rest';
 import * as iterable from './iterable';
 import * as markdown from './markdown';
 import * as status from './status';
-import type { ConfigSection, RepoContext, Section } from './types';
+import type { ConfigSection, RepoContext, Section, Issue } from './types';
 
 export async function run(inputs: {
     title: string,
@@ -39,7 +39,7 @@ export async function run(inputs: {
 }
 
 // See https://octokit.github.io/rest.js/v17#issues-list-for-repo.
-async function queryIssues( octokit: Octokit, repoContext: RepoContext, labels: string[]) {
+async function queryIssues(octokit: Octokit, repoContext: RepoContext, labels: string[]): Promise<Issue[]> {
     const issuesResponse = await octokit.issues.listForRepo({
         ...repoContext,
         labels: labels.join(','),
