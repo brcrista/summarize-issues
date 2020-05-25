@@ -3584,8 +3584,12 @@ async function run(inputs) {
 exports.run = run;
 // See https://octokit.github.io/rest.js/v17#issues-list-for-repo.
 async function queryIssues(octokit, repoContext, labels) {
-    const issuesResponse = await octokit.issues.listForRepo(Object.assign(Object.assign({}, repoContext), { labels: labels.join(','), state: 'open' }));
-    return issuesResponse.data.filter(issue => !issue.pull_request);
+    return await octokit.paginate(
+    // There's a bug in the Octokit type declaration for `paginate`.
+    // It won't let you use the endpoint method as documented: https://octokit.github.io/rest.js/v17#pagination.
+    // Work around by using the route string instead.
+    //octokit.issues.listForRepo,
+    "GET /repos/:owner/:repo/issues", Object.assign(Object.assign({}, repoContext), { labels: labels.join(','), state: 'open' }), (response) => response.data.filter(issue => !issue.pull_request));
 }
 function generateReport(title, sections, repoContext) {
     return Array.from(iterable.chain(markdown.generateSummary(title, sections), markdown.generateDetails(sections, repoContext))).join('\n');
