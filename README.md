@@ -77,32 +77,34 @@ This will commit a Markdown file named `IssuesReport.md` that looks like this:
 ### Summary
 | Section Title | Labels | Threshold | Count | Status |
 | -- | -- | -- | -- | -- |
-| [Section with green status](#-Section-with-green-status-query) | `incident-repair`, `short-term` | 10 | 2 | 💚🥳 |
-| [Section with yellow status](#-Section-with-yellow-status-query) | `needs-triage` | 2 | 2 | 💛😬 |
-| [Section with red status](#-Section-with-red-status-query) | `bug` | 1 | 2 | ❤️🥵 |
+| [Section with green status](#-Section-with-green-status-query) | `incident-repair`, `short term` | 10 | 3 | 💚🥳 |
+| [Section with yellow status](#-Section-with-yellow-status-query) | `needs-triage` | 3 | 3 | 💛😬 |
+| [Section with red status](#%EF%B8%8F-Section-with-red-status-query) | `bug` | 1 | 3 | ❤️🥵 |
 ## Details
-### 💚🥳 Section with green status [(query)](https://github.com/test/repo/issues?q=is%3Aissue+is%3Aopen+label%3Aincident-repair+label%3Ashort-term)
-Total: 2
+### 💚🥳 Section with green status [(query)](https://github.com/test/repo/issues?q=is%3Aissue+is%3Aopen+label%3Aincident-repair+label%3A%22short%20term%22)
+Total: 3
 
 Threshold: 10
 
-Labels: `incident-repair`, `short-term`
+Labels: `incident-repair`, `short term`
 
 | Owner | Count |
 | -- | -- |
-| [brcrista](https://github.com/test/repo/issues?q=is%3Aissue+is%3Aopen+label%3Aincident-repair+label%3Ashort-term+assignee%3Abrcrista) | 1 |
+| [**Unassigned**](https://github.com/test/repo/issues?q=is%3Aissue+is%3Aopen+label%3Aincident-repair+label%3A%22short%20term%22+no%3Aassignee) | 2 |
+| [brcrista](https://github.com/test/repo/issues?q=is%3Aissue+is%3Aopen+label%3Aincident-repair+label%3A%22short%20term%22+assignee%3Abrcrista) | 1 |
 ### 💛😬 Section with yellow status [(query)](https://github.com/test/repo/issues?q=is%3Aissue+is%3Aopen+label%3Aneeds-triage)
-Total: 2
+Total: 3
 
-Threshold: 2
+Threshold: 3
 
 Labels: `needs-triage`
 
 | Owner | Count |
 | -- | -- |
+| [**Unassigned**](https://github.com/test/repo/issues?q=is%3Aissue+is%3Aopen+label%3Aneeds-triage+no%3Aassignee) | 2 |
 | [brcrista](https://github.com/test/repo/issues?q=is%3Aissue+is%3Aopen+label%3Aneeds-triage+assignee%3Abrcrista) | 1 |
 ### ❤️🥵 Section with red status [(query)](https://github.com/test/repo/issues?q=is%3Aissue+is%3Aopen+label%3Abug)
-Total: 2
+Total: 3
 
 Threshold: 1
 
@@ -110,5 +112,6 @@ Labels: `bug`
 
 | Owner | Count |
 | -- | -- |
+| [**Unassigned**](https://github.com/test/repo/issues?q=is%3Aissue+is%3Aopen+label%3Abug+no%3Aassignee) | 2 |
 | [brcrista](https://github.com/test/repo/issues?q=is%3Aissue+is%3Aopen+label%3Abug+assignee%3Abrcrista) | 1 |
 ```

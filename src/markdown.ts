@@ -18,7 +18,15 @@ export function* generateDetails(sections: Section[], repoContext: RepoContext) 
 }
 
 function* sectionSummary(section: Section) {
-    const sectionAnchor = '#' + `-${hyphenate(section.section)}-query`;
+    // When generating header links, the red status needs some additional characters at the front because of the emoji it uses.
+    // However GitHub-Flavored Markdown generates IDs for its headings, the other statuses aren't affected and just drop theirs.
+    // It probably has to do with the Unicode ranges.
+    const redStatusIdFragment = '%EF%B8%8F';
+
+    const sectionAnchor = '#'
+        + (section.status === '❤️🥵' ? redStatusIdFragment : '')
+        + `-${hyphenate(section.section)}-query`;
+
     yield `| ${link(section.section, sectionAnchor)} | ${section.labels.map(code).join(', ')} | ${section.threshold} | ${section.issues.length} | ${section.status} |`;
 }
 

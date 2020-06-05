@@ -21,6 +21,7 @@ const mocktokit = <Octokit><unknown>{
     }
 };
 
+// Update by running octokit-response.js.
 const issuesForRepoResponseJson = `[
     {
         "url": "https://api.github.com/repos/brcrista/summarize-issues-test/issues/4",

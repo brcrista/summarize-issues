@@ -7,7 +7,7 @@
     {
       "section": "Section with yellow status",
       "labels": ["needs-triage"],
-      "threshold": 2
+      "threshold": 3
     },
     {
       "section": "Section with red status",
