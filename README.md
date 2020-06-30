@@ -1,6 +1,6 @@
 # Summarize Issues
 
-[![GitHub Actions build badge](https://github.com/actions/typescript-action/workflows/build-test/badge.svg)](https://github.com/brcrista/summarize-issues/actions?query=workflow%3Abuild-test)
+[![GitHub Actions build badge](https://github.com/brcrista/summarize-issues/workflows/build-test/badge.svg)](https://github.com/brcrista/summarize-issues/actions?query=workflow%3Abuild-test)
 
 GitHub Action that generates a Markdown summary of the issues in a repo.
 
