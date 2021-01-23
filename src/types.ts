@@ -11,6 +11,7 @@ export type Issue = Octokit.IssuesListForRepoResponseItem;
 export interface ConfigSection {
     section: string,
     labels: string[],
+    excludeLabels?: string[],
     threshold: number
 }
 

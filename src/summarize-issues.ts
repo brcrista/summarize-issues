@@ -21,7 +21,7 @@ export async function run(inputs: {
     console.log('Querying for issues ...');
     const sections = [];
     for (const configSection of configSections) {
-        const issues = await queryIssues(inputs.octokit, inputs.repoContext, configSection.labels);
+        const issues = await queryIssues(inputs.octokit, inputs.repoContext, configSection.labels, configSection.excludeLabels || []);
         sections.push({
             ...configSection,
             issues,
@@ -39,7 +39,7 @@ export async function run(inputs: {
 }
 
 // See https://octokit.github.io/rest.js/v17#issues-list-for-repo.
-async function queryIssues(octokit: Octokit, repoContext: RepoContext, labels: string[]): Promise<Issue[]> {
+async function queryIssues(octokit: Octokit, repoContext: RepoContext, labels: string[], excludeLabels: string[]): Promise<Issue[]> {
     return await octokit.paginate(
         // There's a bug in the Octokit type declaration for `paginate`.
         // It won't let you use the endpoint method as documented: https://octokit.github.io/rest.js/v17#pagination.
@@ -51,7 +51,12 @@ async function queryIssues(octokit: Octokit, repoContext: RepoContext, labels: s
             labels: labels.join(','),
             state: 'open'
         },
-        (response: Octokit.Response<Octokit.IssuesListForRepoResponse>) => response.data.filter(issue => !issue.pull_request));
+        (response: Octokit.Response<Octokit.IssuesListForRepoResponse>) => response.data.filter(issue => filterIssue(issue, excludeLabels)));
+}
+
+function filterIssue(issue: Octokit.IssuesListForRepoResponseItem, excludeLabels: string[]) {
+    return !issue.pull_request &&
+           !issue.labels.some(label => excludeLabels.includes(label.name));
 }
 
 function generateReport(title: string, sections: Section[], repoContext: RepoContext): string {

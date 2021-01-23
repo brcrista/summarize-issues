@@ -13,5 +13,11 @@
       "section": "Section with red status",
       "labels": ["bug"],
       "threshold": 1
+    },
+    {
+      "section": "Section with excludeLabels",
+      "labels": ["incident-repair", "short term"],
+      "excludeLabels": ["documentation"],
+      "threshold": 1
     }
 ]
