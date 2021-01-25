@@ -31,3 +31,7 @@ jobs:
         outputPath: 'IssuesReport.md'
         configPath: 'test/issues-report.json'
         token: ${{ secrets.GITHUB_TOKEN }}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: report
+        path: IssuesReport.md

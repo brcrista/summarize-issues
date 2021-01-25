@@ -52,6 +52,29 @@ describe('The details section', () => {
         ]);
     });
 
+    test('creates excludeLabels query and details correctly', () => {
+        const sections: Section[] = [{
+            section: "Non-reliability bugs",
+            labels: ['bug'],
+            excludeLabels: ['reliability'],
+            threshold: 1,
+            issues: [],
+            status: '💚🥳'
+        }];
+
+        const details = Array.from(markdown.generateDetails(sections, { owner: 'test', repo: 'repo' }));
+
+        expect(details).toStrictEqual([
+            '## Details',
+            '### 💚🥳 Non-reliability bugs [(query)](https://github.com/test/repo/issues?q=is%3Aissue+is%3Aopen+label%3Abug+-label%3Areliability)',
+            'Total: 0\n',
+            'Threshold: 1\n',
+            'Labels: `bug`, ~`reliability`~\n',
+            '| Owner | Count |',
+            '| -- | -- |'
+        ]);
+    });
+
     test('creates the owner table correctly', () => {
         const sections: Section[] = [{
             section: "Bugs",

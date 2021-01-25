@@ -27,16 +27,16 @@ function* sectionSummary(section: Section) {
         + (section.status === '❤️🥵' ? redStatusIdFragment : '')
         + `-${hyphenate(section.section)}-query`;
 
-    yield `| ${link(section.section, sectionAnchor)} | ${section.labels.map(code).join(', ')} | ${section.threshold} | ${section.issues.length} | ${section.status} |`;
+    yield `| ${link(section.section, sectionAnchor)} | ${section.labels.map(code).concat((section.excludeLabels || []).map(x => strike(code(x)))).join(', ')} | ${section.threshold} | ${section.issues.length} | ${section.status} |`;
 }
 
 function* sectionDetails(section: Section, repoContext: RepoContext) {
     const owners = sumIssuesForOwners(section.issues);
 
-    yield h3(`${section.status} ${section.section} ${link('(query)', issuesQuery(repoContext, section.labels))}`);
+    yield h3(`${section.status} ${section.section} ${link('(query)', issuesQuery(repoContext, section.labels, section.excludeLabels || []))}`);
     yield `Total: ${section.issues.length}\n`;
     yield `Threshold: ${section.threshold}\n`;
-    yield `Labels: ${section.labels.map(code).join(', ')}\n`
+    yield `Labels: ${section.labels.map(code).concat((section.excludeLabels|| []).map(x => strike(code(x)))).join(', ')}\n`
     yield '| Owner | Count |';
     yield '| -- | -- |';
 
@@ -44,7 +44,7 @@ function* sectionDetails(section: Section, repoContext: RepoContext) {
     const ownersByIssueCount = Object.keys(owners).sort((a, b) => owners[b] - owners[a]);
     for (const key of ownersByIssueCount) {
         // `key` is the owner's login
-        const queryUrl = issuesQuery(repoContext, section.labels, key);
+        const queryUrl = issuesQuery(repoContext, section.labels, section.excludeLabels || [], key);
         yield `| ${link(key, queryUrl)} | ${owners[key]} |`;
     }
 }
@@ -54,22 +54,20 @@ const h2 = (text: string) => `## ${text}`;
 const h3 = (text: string) => `### ${text}`;
 const link = (text: string, href: string) => `[${text}](${href})`;
 const code = (text: string) => `\`${text}\``;
+const strike = (text: string) => `\~${text}\~`;
 
 // Useful for converting a header name to an HTML ID in a hacky way
 const hyphenate = (headerName: string) => headerName.replace(/\s+/g, '-');
 
 /** Construct a URL like `https://github.com/brcrista/summarize-issues-test/issues?q=is%3Aissue+is%3Aopen+label%3Aincident-repair+label%3Ashort-term`. */
-function issuesQuery(repoContext: RepoContext, labels: string[], assignee?: string) {
-    // If the label contains a space, the query string needs to have it in quotes.
-    labels = labels.map(label => {
-        if (label.includes(' ')) {
-            return `"${label}"`;
-        } else {
-            return label;
-        }
-    });
+function issuesQuery(repoContext: RepoContext, labels: string[], excludeLabels: string[], assignee?: string) {
+    labels = makeLabelsUrlSafe(labels);
+    excludeLabels = makeLabelsUrlSafe(excludeLabels);
 
-    const queryInputs = ['is:issue','is:open'].concat(labels.map(label => `label:${label}`));
+    const queryInputs = ['is:issue','is:open']
+        .concat(labels.map(label => `label:${label}`))
+        .concat(excludeLabels.map(excludeLabel => `-label:${excludeLabel}`));
+
     if (assignee) {
         // Using a sentinel value is a hack, but it keeps the interface and implementation simple here.
         if (assignee === unassignedKey) {
@@ -82,6 +80,17 @@ function issuesQuery(repoContext: RepoContext, labels: string[], assignee?: stri
     // The `+` signs should not be encoded for the query to work.
     const queryString = queryInputs.map(encodeURIComponent).join('+');
     return `https://github.com/${repoContext.owner}/${repoContext.repo}/issues?q=${queryString}`;
+}
+
+function makeLabelsUrlSafe(labels: string[]) {
+    // If the label contains a space, the query string needs to have it in quotes.
+    return labels.map(label => {
+        if (label.includes(' ')) {
+            return `"${label}"`;
+        } else {
+            return label;
+        }
+    });
 }
 
 /** Get a mapping of owner logins to the number of issues they have in this section. */
