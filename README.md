@@ -28,7 +28,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - uses: brcrista/summarize-issues@v3
+    - uses: brcrista/summarize-issues@v4
       with:
         title: 'My Issues Report'
         configPath: '.github/workflows/issues-report-config.json'
