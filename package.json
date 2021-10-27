@@ -21,17 +21,17 @@
   "author": "Brian Cristante",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.2.6",
+    "@actions/core": "^1.6.0",
     "@actions/github": "^2.2.0"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.23",
-    "@types/node": "^12.7.12",
+    "@types/jest": "^27.0.2",
+    "@types/node": "^12.20.36",
     "@zeit/ncc": "^0.20.5",
-    "jest": "^24.9.0",
-    "jest-circus": "^24.9.0",
-    "js-yaml": "^3.13.1",
-    "ts-jest": "^24.2.0",
-    "typescript": "^3.9.2"
+    "jest": "^27.3.1",
+    "jest-circus": "^27.3.1",
+    "js-yaml": "^3.14.1",
+    "ts-jest": "^27.0.7",
+    "typescript": "^3.9.10"
   }
 }
