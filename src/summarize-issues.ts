@@ -2,7 +2,6 @@ import * as fs from 'fs';
 
 import type { Octokit } from '@octokit/rest';
 
-import * as iterable from './iterable';
 import * as markdown from './markdown';
 import * as status from './status';
 import type { ConfigSection, RepoContext, Section, Issue } from './types';
@@ -55,13 +54,12 @@ async function queryIssues(octokit: Octokit, repoContext: RepoContext, labels: s
 }
 
 function filterIssue(issue: Octokit.IssuesListForRepoResponseItem, excludeLabels: string[]) {
-    return !issue.pull_request &&
-           !issue.labels.some(label => excludeLabels.includes(label.name));
+    return !issue.pull_request && !issue.labels.some(label => excludeLabels.includes(label.name));
 }
 
 function generateReport(title: string, sections: Section[], repoContext: RepoContext): string {
-    return Array.from(iterable.chain(
-        markdown.generateSummary(title, sections),
-        markdown.generateDetails(sections, repoContext))
-    ).join('\n');
+    return Array.from([
+        ...markdown.generateSummary(title, sections),
+        ...markdown.generateDetails(sections, repoContext)
+    ]).join('\n');
 }

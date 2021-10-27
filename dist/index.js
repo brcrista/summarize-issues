@@ -4259,7 +4259,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.run = void 0;
 const fs = __importStar(__webpack_require__(747));
-const iterable = __importStar(__webpack_require__(377));
 const markdown = __importStar(__webpack_require__(716));
 const status = __importStar(__webpack_require__(895));
 async function run(inputs) {
@@ -4290,11 +4289,13 @@ async function queryIssues(octokit, repoContext, labels, excludeLabels) {
     "GET /repos/:owner/:repo/issues", Object.assign(Object.assign({}, repoContext), { labels: labels.join(','), state: 'open' }), (response) => response.data.filter(issue => filterIssue(issue, excludeLabels)));
 }
 function filterIssue(issue, excludeLabels) {
-    return !issue.pull_request &&
-        !issue.labels.some(label => excludeLabels.includes(label.name));
+    return !issue.pull_request && !issue.labels.some(label => excludeLabels.includes(label.name));
 }
 function generateReport(title, sections, repoContext) {
-    return Array.from(iterable.chain(markdown.generateSummary(title, sections), markdown.generateDetails(sections, repoContext))).join('\n');
+    return Array.from([
+        ...markdown.generateSummary(title, sections),
+        ...markdown.generateDetails(sections, repoContext)
+    ]).join('\n');
 }
 
 
@@ -5251,24 +5252,6 @@ function deprecate (message) {
   console.warn(`DEPRECATED (@octokit/rest): ${message}`)
   loggedMessages[message] = 1
 }
-
-
-/***/ }),
-
-/***/ 377:
-/***/ (function(__unusedmodule, exports) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.chain = void 0;
-/** Join zero or more iterables into a single iterable. */
-function* chain(...iterables) {
-    for (const it of iterables) {
-        yield* it;
-    }
-}
-exports.chain = chain;
 
 
 /***/ }),
