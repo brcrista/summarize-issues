@@ -21,7 +21,7 @@
   "author": "Brian Cristante",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.6.0",
+    "@actions/core": "^1.9.1",
     "@actions/github": "^2.2.0"
   },
   "devDependencies": {
